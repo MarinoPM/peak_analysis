@@ -54,3 +54,14 @@ ls
 log.out
 fasta_peaks/
 ```
+4.  **Caso: Archivo FASTA malformado.**
+
+    - **Entradas:**
+       - Archivo FASTA sin encabezado ">" o con contenido no secuencial (caracteres inválidos).
+    - **Esperado:**
+       - El sistema debe imprimir un mensaje de advertencia:
+       `Error: Invalid FASTA format `
+
+```python
+mk_fasta_from_peaks.py -i peak_file.txt -g broken.fna -o fasta_peaks/
+```
