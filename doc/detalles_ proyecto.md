@@ -136,12 +136,12 @@ Este archivo contiene información crucial sobre las regiones de unión de los 1
     -   _Ejemplo:_ "intergénica", "intrónica", etc.
 
 **Validación en los campos:**
-   -  Validar que las posiciones (Peak_start, Peak_end) sean enteros positivos.
-   -  Asegurar que Peak_start ≤ Peak_end.
+   -  Validar que las posiciones (`Peak_start`, `Peak_end`) sean enteros positivos.
+   -  Asegurar que `Peak_start` ≤ `Peak_end`.
    -  Omitir y registrar en un log los picos con valores nulos o mal formateados.
    -  Detectar y manejar registros duplicados.
    -  Las columnas requeridas son: 
-      Dataset_Ids, TF_name, Peak_start, Peak_end.
+      `Dataset_Ids`, `TF_name`, `Peak_start`, `Peak_end`.
        - Estas columnas son obligatorias. Si falta alguna, se detiene el programa con un mensaje de error.
    
 
@@ -166,10 +166,13 @@ Este archivo contiene información crucial sobre las regiones de unión de los 1
     -   Leer cada fila del archivo de picos.
     -   Extraer los campos `TF_name`, `Peak_start`, `Peak_end` para cada entrada.
     -   Para cada `TF_name`, usar las posiciones `Peak_start` y `Peak_end` para extraer la secuencia correspondiente del archivo FASTA del genoma.
+    -   Fusionar picos superpuestos en una única secuencia FASTA.
 3.  **Generación de FASTA:**
     
     -   Agrupar las secuencias extraídas por `TF_name`.
     -   Crear un archivo FASTA por cada `TF_name` en el directorio de salida con la misma estructura `<TF_name>.fa`.
+    -   Formato de la cabecera en cada archivo FASTA:
+Cada secuencia en el FASTA debe incluir los siguientes detalles en el encabezado: `>TF_name|Dataset_Ids|Peak_start|Peak_end|Max_Fold_Enrichment`.
 
 
 **Algoritmo**
@@ -202,6 +205,10 @@ Este archivo contiene información crucial sobre las regiones de unión de los 1
     -   Iterar sobre cada archivo `.fa` en el directorio.
     -   Generar una línea de comando para ejecutar `meme` usando cada archivo FASTA.
     -   Incluir opciones necesarias (por ejemplo, `-oc <output_directory>`, `-mod oops`, etc.) y asegurar nombrar el directorio de salida para cada ejecución de `meme`.
+    -   Si un comando de MEME falla, el script continuará con el siguiente archivo.
+         - Registrar todos los errores en un archivo de log (meme_errors.log).
+         - Si el directorio no tiene archivos FASTA, mostrar:
+         `"Error: No FASTA files found in directory"`.
 3.  **Salida del Script:**
     - salida a pantalla
     
@@ -232,11 +239,13 @@ rectangle "Sistema de Extracción y Creación de FASTA (Python)" {
     usecase "Leer archivo de picos y genoma FASTA" as UC1
     usecase "Extraer y agrupar secuencias por TF_name" as UC2
     usecase "Generar archivos FASTA" as UC3
+    usecase "Registrar errores en log.out" as UC6
 }
 
 rectangle "Script de Automatización de meme (Shell)" {
     usecase "Leer directorio de archivos FASTA" as UC4
     usecase "Generar script de comandos meme" as UC5
+    usecase "Registrar errores de MEME en meme_errors.log" as UC7
 }
 
 usuario --> UC1 : Ejecuta script Python
