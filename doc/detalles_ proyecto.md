@@ -1,10 +1,10 @@
 # Proyecto de Automatización para la Identificación de Sitios de Unión de Factores de Transcripción en E. coli en experimentos de ChIP-Seq
 
-Fecha: [dd/mm/yyyy]
+Fecha: [11/03/2025]
 
 Participantes: 
 
-- [nombre]  <email: > 
+- [Erik Marino Peña Martinez]  < email: marinopm@lcg.unam.mx > 
 
 ## Descripción del Problema
 <!-- Puedes empezar con una introducción, luego la justificación y plantear el problema. -->
@@ -28,6 +28,11 @@ El proyecto busca automatizar la extracción y el análisis de secuencias genóm
     
     -   Leer el archivo de picos para obtener las posiciones de inicio y fin de los picos asociados a cada `TF_name`.
     -   Extraer las secuencias desde el archivo FASTA del genoma utilizando las coordenadas `Peak_start` y `Peak_end`, asegurándose de considerar solamente la cadena forward.
+    -   Manejo de múltiples picos por TF_name: 
+     Se generará un único archivo FASTA por TF_name, consolidando todas sus secuencias.
+    Si se desea mantener picos separados, se nombrarán con un sufijo incremental (ej., AraC_1.fa, AraC_2.fa).
+    -   Manejo de secuencias vacías:
+Si no se puede extraer una secuencia válida, omitir el pico e informar en el log de errores.
 3.  **Generación de Archivos FASTA:**
     
     -   Crear archivos FASTA individuales para cada `TF_name`. Los nombres de los archivos deben coincidir con el `TF_name` y usar la extensión `.fa`.
@@ -60,6 +65,9 @@ El proyecto busca automatizar la extracción y el análisis de secuencias genóm
     -   El sistema debe ser ejecutable desde la línea de comandos.
     -   Todos los datos de entrada a los programas deben pasarse via argumentos.
     -   Si se implementa código debe usarse python o scripts shell.
+    -  Compatibilidad con versiones específicas:
+    Ubuntu 20.04+, Debian, CentOS, MacOS.
+    Python 3.8 o superior.
     
 -   **Calidad y Mantenimiento:**
     
